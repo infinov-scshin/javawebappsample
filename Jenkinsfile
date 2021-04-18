@@ -23,7 +23,7 @@ node {
       def webAppName = 'scshintestapp'
       // login Azure
       withCredentials([usernamePassword(credentialsId: 'AzureServicePrincipal', passwordVariable: '_uyMzaLOpq5K2Or3p1j_A_V19Fi8z_yBto', usernameVariable: 'e989cd22-c96a-4632-847f-ec4a12026e56')]) {
-       sh '''
+       bat '''
           az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID
           az account set -s $AZURE_SUBSCRIPTION_ID
         '''
@@ -32,9 +32,9 @@ node {
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile pubProfilesJson
       // upload package
-      sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+      bat "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
       // log out
-      sh 'az logout'
+      bat 'az logout'
     }
   }
 }
